@@ -1,0 +1,11 @@
+{
+    "name": "yuanxinhealthy/exceptions",
+    "description": "异常",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "YuanxinHealthy\\Exceptions\\": "src/"
+        }
+    },
+    "require": {}
+}
