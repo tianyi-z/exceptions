@@ -7,9 +7,11 @@ class ConfigProvider
     {
         return [
             'exceptions' => [
-                'jsonrpc' => [
-                    Handler\JsonRpcServerExceptionHandler::class,
-                ],
+                'handler' => [
+                    'jsonrpc' => [
+                        Handler\JsonRpcServerExceptionHandler::class,
+                    ],
+                ]
             ],
         ];
     }
