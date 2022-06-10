@@ -10,10 +10,5 @@
     "config": {
         "sort-packages": true
     },
-    "require": {},
-    "extra": {
-        "hyperf": {
-            "config": "YuanxinHealthy\\Exceptions\\ConfigProvider"
-        }
-    }
+    "require": {}
 }
