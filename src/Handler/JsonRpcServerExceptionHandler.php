@@ -31,6 +31,6 @@ class JsonRpcServerExceptionHandler extends \Hyperf\JsonRpc\Exception\Handler\Tc
 
     public function isValid(Throwable $throwable): bool
     {
-        return $this->isWhiteException($throwable);
+        return true;
     }
 }
