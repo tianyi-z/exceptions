@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use YuanxinHealthy\Exceptions\BaseException;
 class JsonRpcServerExceptionHandler extends \Hyperf\JsonRpc\Exception\Handler\TcpExceptionHandler
 {
+    use \YuanxinHealthy\Exceptions\Traits\VerificationTrait;
     public function handle(Throwable $throwable, ResponseInterface $response)
     {
         $content = [
@@ -18,15 +19,7 @@ class JsonRpcServerExceptionHandler extends \Hyperf\JsonRpc\Exception\Handler\Tc
             'exception' => get_class($throwable),
             'data' => \Hyperf\Utils\ApplicationContext::getContainer()->get(ServerRequestInterface::class)->getAttribute('data',[])
         ];
-        $debug = false;
-        if ($throwable instanceof BaseException) {
-            $debug = true;
-        } elseif (class_exists('\App\Exception\BusinessException') && ($throwable instanceof \App\Exception\BusinessException)) {
-            $debug = true;
-        } elseif (class_exists('\Hyperf\Utils\Exception\InvalidArgumentException') && ($throwable instanceof \Hyperf\Utils\Exception\InvalidArgumentException)) {
-            $debug = true;
-        }
-        if ($debug) {
+        if ($this->isWhiteException($throwable)) {
             // 自己定的异常
             $this->logger->debug($this->formatter->format($throwable), $content);
         } else {
@@ -34,5 +27,10 @@ class JsonRpcServerExceptionHandler extends \Hyperf\JsonRpc\Exception\Handler\Tc
         }
         $this->stopPropagation();
         return $response;
+    }
+
+    public function isValid(Throwable $throwable): bool
+    {
+        return $this->isWhiteException($throwable);
     }
 }
