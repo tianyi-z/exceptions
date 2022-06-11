@@ -56,15 +56,16 @@ class HttpExceptionHandler extends ExceptionHandler
             return $throwable->httpHandle($throwable, $response);
         } elseif($this->isWhiteException($throwable)) {
             // 白名单
+            $code = $throwable->getCode() ?? 400;
             return $response->withHeader(
                 'Content-Type',
                 'application/json; charset=utf-8'
             )->withBody(
                 new SwooleStream(
                     json_encode([
-                        'code' => $throwable->getCode(),
+                        'code' => $code,
                         'msg' => $throwable->getMessage(),
-                        'sub_code' => $throwable->getCode(),
+                        'sub_code' => $code,
                         'data' => null,
                     ])
                 )
