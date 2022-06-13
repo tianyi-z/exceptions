@@ -33,6 +33,14 @@ trait VerificationTrait
             // 自定义的异常内
             return true;
         }
+        if (strpos($throwable, 'Hyperf\Utils\Exception\InvalidArgumentException') === 0) {
+            // 自定义的异常内
+            return true;
+        }
+        if (strpos($throwable, '\Hyperf\Utils\Exception\InvalidArgumentException') === 0) {
+            // 自定义的异常内
+            return true;
+        }
         if (strpos($throwable, '\App\Exception') === 0) {
             // 自定义的异常内
             return true;
