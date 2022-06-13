@@ -56,7 +56,7 @@ class HttpExceptionHandler extends ExceptionHandler
             return $throwable->httpHandle($throwable, $response);
         } elseif($this->isWhiteException($throwable)) {
             // 白名单
-            $code = $throwable->getCode() ?? 400;
+            $code = $throwable->getCode() ? $throwable->getCode() : 400;
             return $response->withHeader(
                 'Content-Type',
                 'application/json; charset=utf-8'
@@ -74,7 +74,7 @@ class HttpExceptionHandler extends ExceptionHandler
             // rpc请求的结果返回的异常,如果是预期的异常需要原样提示出来.
             $className = $throwable->getThrowableClassName();
             if(class_exists($className) && $this->isWhiteExceptionByClass($className)) {
-                $code = $throwable->getThrowableCode() ?? 500;
+                $code = $throwable->getThrowableCode() ? $throwable->getThrowableCode() : 500;
                 return $response->withHeader(
                     'Content-Type',
                     'application/json; charset=utf-8'
