@@ -18,6 +18,7 @@ use Psr\Http\Message\ResponseInterface;
 use Throwable;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Router\Dispatched;
+use YuanxinHealthy\Exceptions\ErrorCode;
 
 class HttpExceptionHandler extends ExceptionHandler
 {
@@ -42,7 +43,7 @@ class HttpExceptionHandler extends ExceptionHandler
         $routeHand = $request->getAttribute(Dispatched::class)->handler;
         $method = strtoupper($request->getMethod() . '');
         $content = [
-            'ip' => env('POD_ID', ''),
+            'ip' => env('POD_IP', ''),
             'file' => $throwable->getFile(),
             'line' => $throwable->getLine(),
             'code' => $throwable->getCode(),
@@ -51,6 +52,23 @@ class HttpExceptionHandler extends ExceptionHandler
             'route' => $routeHand->route . ':' . $method,
         ];
         $this->logger->debug($throwable->getMessage(), $content);
+        if (class_exists('\Hyperf\Validation\ValidationException') && ($throwable instanceof \Hyperf\Validation\ValidationException)) {
+                $code = $throwable->getCode() ? $throwable->getCode() : ErrorCode::CODE_ERROR_ARGUMENT;
+                return $response->withHeader(
+                    'Content-Type',
+                    'application/json; charset=utf-8'
+                )->withBody(
+                    new SwooleStream(
+                        json_encode([
+                            'code' => $code,
+                            'msg' => $throwable->validator->getMessageBag()->first(),
+                            'msg_list' => $throwable->validator->getMessageBag()->all(),
+                            'sub_code' => $code,
+                            'data' => null,
+                        ])
+                    )
+                );
+        }
         if ($throwable instanceof \YuanxinHealthy\Exceptions\BaseException) {
             // 自己定义的
             return $throwable->httpHandle($throwable, $response);

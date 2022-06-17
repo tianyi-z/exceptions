@@ -12,7 +12,7 @@ class JsonRpcServerExceptionHandler extends \Hyperf\JsonRpc\Exception\Handler\Tc
     public function handle(Throwable $throwable, ResponseInterface $response)
     {
         $content = [
-            'ip' => env('POD_ID', ''),
+            'ip' => env('POD_IP', ''),
             'file' => $throwable->getFile(),
             'line' => $throwable->getLine(),
             'code' => $throwable->getCode(),
